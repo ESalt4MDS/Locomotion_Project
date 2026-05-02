@@ -19,5 +19,7 @@ private:
 	sf::RenderWindow* m_window;
 
 	CCharacter* m_character;
+
+	sf::Clock m_clock;
 };
 

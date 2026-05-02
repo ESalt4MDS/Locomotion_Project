@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="CCharacter.h" />
     <ClInclude Include="CProgramManager.h" />
+    <ClInclude Include="PhysicsLibrary.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

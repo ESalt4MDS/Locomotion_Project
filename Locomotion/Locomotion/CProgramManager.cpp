@@ -18,19 +18,28 @@ void CProgramManager::Initialize()
 {
     //spawn a character
     m_character = new CCharacter(sf::Vector2f(100.0f, 100.0f));
+
+
 }
 
 void CProgramManager::RunProgram()
 {
     while (m_window->isOpen())
     {
+        sf::Time deltaTime = m_clock.restart();
+        float dt = deltaTime.asSeconds();
+
         while (const std::optional event = m_window->pollEvent())
         {
             if (event->is<sf::Event::Closed>())
                 m_window->close();
         }
 
+        sf::Vector2f mousePosition;
+        mousePosition = sf::Vector2f(sf::Mouse::getPosition(*m_window).x, sf::Mouse::getPosition(*m_window).y);
+
         //update character
+        m_character->Update(dt, mousePosition);
 
         Draw();
     }
