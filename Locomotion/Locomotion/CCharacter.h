@@ -11,7 +11,7 @@ public:
 	void Update(float _dt, sf::Vector2f _targetPosition);
 	void Draw(sf::RenderWindow* _window);
 
-	void Seek(sf::Vector2f _targetPosition);
+	void Seek(sf::Vector2f _targetPosition, float _dt);
 
 private:
 	sf::RectangleShape* m_shape;
@@ -25,6 +25,8 @@ private:
 	float m_speed = 0.0f;
 	float m_maxSpeed = 20.0f;
 
-	sf::VertexArray m_line;
+	sf::VertexArray m_currentVelLine;
+	sf::VertexArray m_steeringLine;
+	sf::VertexArray m_desiredVelLine;
 };
 

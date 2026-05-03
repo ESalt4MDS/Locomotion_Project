@@ -39,7 +39,7 @@ void CProgramManager::RunProgram()
         mousePosition = sf::Vector2f(sf::Mouse::getPosition(*m_window).x, sf::Mouse::getPosition(*m_window).y);
 
         //update character
-        m_character->Update(dt, mousePosition);
+        m_character->Seek(mousePosition, dt);
 
         Draw();
     }
