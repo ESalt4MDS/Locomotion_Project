@@ -22,16 +22,21 @@ private:
 	sf::Vector2f m_currentVelocity;
 	sf::Vector2f m_steeringForce;
 
+	//seek & flee
 	float m_maxDesiredVelocity = 128.0f;
 	float m_maxDesiredSteering = 64.0f;
-
 	float m_speed = 0.0f;
 	float m_maxSpeed = 20.0f;
 
+	//wander
 	float m_wanderForwardDistance = 1.0f;
 	float m_wanderAngle = 0.22f;
 	float m_wanderRadius = 100.0f;
 	float m_wanderRandSpin = 0.05f;
+
+	//arrive
+	float m_slowingRadius = 200.0f;
+
 
 	//seek & flee debug lines
 	sf::VertexArray m_currentVelLine;
@@ -42,6 +47,8 @@ private:
 	sf::CircleShape m_wanderCircle;
 	sf::VertexArray m_wanderLine;
 
+	//arrive debug
+	sf::CircleShape m_arrivalCircle;
 
 };
 

@@ -32,6 +32,12 @@ CCharacter::CCharacter(sf::Vector2f _position)
 	m_wanderCircle.setOutlineColor(sf::Color::Yellow);
 	m_wanderCircle.setRadius(m_wanderRadius);
 	m_wanderCircle.setOrigin({ m_wanderRadius , m_wanderRadius });
+
+	m_arrivalCircle.setFillColor(sf::Color::Transparent);
+	m_arrivalCircle.setOutlineThickness(1.0f);
+	m_arrivalCircle.setOutlineColor(sf::Color::Yellow);
+	m_arrivalCircle.setRadius(m_slowingRadius);
+	m_arrivalCircle.setOrigin({ m_slowingRadius , m_slowingRadius });
 }
 
 CCharacter::~CCharacter()
@@ -89,11 +95,13 @@ void CCharacter::Draw(sf::RenderWindow* _window)
 	_window->draw(*m_shape);
 
 	_window->draw(m_currentVelLine);
-	//_window->draw(m_desiredVelLine);
+	_window->draw(m_desiredVelLine);
 	_window->draw(m_steeringLine);
 
-	_window->draw(m_wanderCircle);
-	_window->draw(m_wanderLine);
+	//_window->draw(m_wanderCircle);
+	//_window->draw(m_wanderLine);
+
+	_window->draw(m_arrivalCircle);
 
 }
 
@@ -105,12 +113,23 @@ void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
 	sf::Vector2f desiredVelocity;
 	desiredVelocity = desiredDirection;
 
-	//truncate desired velocity
-	if (desiredVelocity.length() > m_maxDesiredVelocity)
-	{
-		desiredVelocity = plNormalize(desiredVelocity) * m_maxDesiredVelocity;
-	}
+	//Arrive
+	float distance = desiredVelocity.length();
+	//printf("%f\n", (distance / m_slowingRadius));
 
+	if (distance < m_slowingRadius)
+	{
+		desiredVelocity = plNormalize(desiredVelocity) * m_maxDesiredVelocity * (distance / m_slowingRadius) * 0.5f;
+	}
+	else
+	{
+		//truncate desired velocity
+		if (desiredVelocity.length() > m_maxDesiredVelocity)
+		{
+			desiredVelocity = plNormalize(desiredVelocity) * m_maxDesiredVelocity;
+		}
+	}
+	
 	m_steeringForce = desiredVelocity - m_currentVelocity;
 
 	//truncate steering force
@@ -119,7 +138,7 @@ void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
 		m_steeringForce = plNormalize(m_steeringForce) * m_maxDesiredSteering;
 	}
 
-	//update velocity and posiition
+	//update velocity and position
 	m_currentVelocity += m_steeringForce * _dt;
 
 	m_currentPosition += m_currentVelocity * _dt;
@@ -148,6 +167,7 @@ void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
 	m_steeringLine[1].position = (m_shape->getPosition() + m_currentVelocity) + m_steeringForce;
 	m_steeringLine[1].color = sf::Color::Blue;
 
+	m_arrivalCircle.setPosition(m_currentPosition);
 	//printf("current position: %f, %f\n", m_shape->getPosition().x, m_shape->getPosition().y);
 
 
