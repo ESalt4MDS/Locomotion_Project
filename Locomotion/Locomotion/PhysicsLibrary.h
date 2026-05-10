@@ -10,6 +10,10 @@ inline float plGetVectorLength(sf::Vector2f _vector)
 
 inline sf::Vector2f plNormalize(sf::Vector2f _vector)
 {
+	if (_vector.length() <= 0.0f)
+	{
+		return sf::Vector2f(0.0f, 0.0f);
+	}
 	float Magnitude = plGetVectorLength(_vector);
 
 	return _vector /= Magnitude;

@@ -8,7 +8,7 @@ public:
 	CCharacter(sf::Vector2f _position);
 	~CCharacter();
 
-	void Update(float _dt, sf::Vector2f _targetPosition);
+	//void Update(float _dt, sf::Vector2f _targetPosition);
 	void Update();
 	void Draw(sf::RenderWindow* _window);
 

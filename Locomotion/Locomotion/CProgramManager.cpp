@@ -19,6 +19,7 @@ void CProgramManager::Initialize()
     //spawn a character
     m_character = new CCharacter(sf::Vector2f(100.0f, 100.0f));
 
+    m_target = new CTarget(sf::Vector2f(500.0f, 500.0f));
 
 }
 
@@ -45,6 +46,8 @@ void CProgramManager::RunProgram()
 
         m_character->Update();
 
+        m_target->Update(dt);
+
         Draw();
     }
 }
@@ -55,6 +58,8 @@ void CProgramManager::Draw()
 
     //draw character
     m_character->Draw(m_window);
+
+    m_target->Draw(m_window);
 
     m_window->display();
 }

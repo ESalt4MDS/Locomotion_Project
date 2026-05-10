@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "CCharacter.h"
+#include "CTarget.h"
 
 class CProgramManager
 {
@@ -21,5 +22,7 @@ private:
 	CCharacter* m_character;
 
 	sf::Clock m_clock;
+
+	CTarget* m_target;
 };
 
