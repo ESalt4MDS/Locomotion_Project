@@ -13,6 +13,32 @@ CTarget::~CTarget()
 {
 }
 
+void CTarget::Update()
+{
+	//border rule
+	if (m_currentPosition.x > WindowSize.x)
+	{
+		m_currentPosition.x = 0.0f;
+	}
+
+	if (m_currentPosition.y > WindowSize.y)
+	{
+		m_currentPosition.y = 0.0f;
+	}
+
+	if (m_currentPosition.x < 0.0f)
+	{
+		m_currentPosition.x = WindowSize.x;
+	}
+
+	if (m_currentPosition.y < 0.0f)
+	{
+		m_currentPosition.y = WindowSize.y;
+	}
+
+	m_shape->setPosition(m_currentPosition);
+}
+
 void CTarget::Update(float _dt)
 {
 	sf::Vector2f MoveVec;
@@ -77,6 +103,11 @@ void CTarget::Update(float _dt)
 void CTarget::Draw(sf::RenderWindow* _window)
 {
 	_window->draw(*m_shape);
+}
+
+sf::Vector2f CTarget::GetCurrentPosition()
+{
+	return m_currentPosition;
 }
 
 

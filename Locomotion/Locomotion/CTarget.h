@@ -7,8 +7,11 @@ public:
 	CTarget(sf::Vector2f _position);
 	~CTarget();
 
+	void Update();
 	void Update(float _dt);
 	void Draw(sf::RenderWindow* _window);
+
+	sf::Vector2f GetCurrentPosition();
 
 private:
 	sf::RectangleShape* m_shape;
