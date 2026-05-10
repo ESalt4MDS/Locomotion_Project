@@ -110,4 +110,9 @@ sf::Vector2f CTarget::GetCurrentPosition()
 	return m_currentPosition;
 }
 
+sf::Vector2f CTarget::GetCurrentVelocity()
+{
+	return m_currentVelocity;
+}
+
 

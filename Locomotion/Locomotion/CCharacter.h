@@ -15,6 +15,8 @@ public:
 	void Seek(sf::Vector2f _targetPosition, float _dt);
 	void Flee(sf::Vector2f _targetPosition, float _dt);
 	void Wander(float _dt);
+	void Pursuit(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosition, float _dt);
+
 
 private:
 	sf::RectangleShape* m_shape;
@@ -37,6 +39,10 @@ private:
 	//arrive
 	float m_slowingRadius = 200.0f;
 
+	//pursuit
+	sf::Vector2f m_newTargetPosition;
+	float m_seekRange = 20.0f;
+
 
 	//seek & flee debug lines
 	sf::VertexArray m_currentVelLine;
@@ -49,6 +55,10 @@ private:
 
 	//arrive debug
 	sf::CircleShape m_arrivalCircle;
+
+	//pursuit debug
+	sf::VertexArray m_pursuitLine;
+
 
 };
 

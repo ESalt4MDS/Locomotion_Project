@@ -12,6 +12,7 @@ public:
 	void Draw(sf::RenderWindow* _window);
 
 	sf::Vector2f GetCurrentPosition();
+	sf::Vector2f GetCurrentVelocity();
 
 private:
 	sf::RectangleShape* m_shape;

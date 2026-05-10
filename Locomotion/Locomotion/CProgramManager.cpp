@@ -17,7 +17,7 @@ CProgramManager::~CProgramManager()
 void CProgramManager::Initialize()
 {
     //spawn a character
-    m_character = new CCharacter(sf::Vector2f(100.0f, 100.0f));
+    m_character = new CCharacter(sf::Vector2f(500.0f, 500.0f));
 
     m_target = new CTarget(sf::Vector2f(500.0f, 500.0f));
 
@@ -44,8 +44,10 @@ void CProgramManager::RunProgram()
         //m_character->Flee(mousePosition, dt);
         //m_character->Wander(dt);
 
-        m_character->Seek(m_target->GetCurrentPosition(), dt);
+        //m_character->Seek(m_target->GetCurrentPosition(), dt);
+        m_character->Pursuit(m_target->GetCurrentVelocity(), m_target->GetCurrentPosition(), dt);
 
+        //printf("%f, %f\n", m_target->GetCurrentPosition().x, m_target->GetCurrentPosition().y);
 
         m_character->Update();
 
