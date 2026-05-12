@@ -82,17 +82,32 @@ void CCharacter::Draw(sf::RenderWindow* _window)
 {
 
 	_window->draw(*m_shape);
+	
+	if (m_drawDebug)
+	{
+		_window->draw(m_currentVelLine);
+		_window->draw(m_steeringLine);
 
-	_window->draw(m_currentVelLine);
-	_window->draw(m_desiredVelLine);
-	_window->draw(m_steeringLine);
+		if (m_behavior == Behavior::WANDER)
+		{
+			_window->draw(m_wanderCircle);
+			_window->draw(m_wanderLine);
+		}
+		else
+		{
+			_window->draw(m_desiredVelLine);
+		}
 
-	//_window->draw(m_wanderCircle);
-	//_window->draw(m_wanderLine);
+		if (m_behavior == Behavior::SEEK || m_behavior == Behavior::PURSUIT)
+		{
+			_window->draw(m_arrivalCircle);
+		}
 
-	_window->draw(m_arrivalCircle);
-
-	_window->draw(m_pursuitLine);
+		if (m_behavior == Behavior::PURSUIT)
+		{
+			_window->draw(m_pursuitLine);
+		}
+	}
 
 }
 
@@ -104,6 +119,11 @@ Behavior CCharacter::GetBehavior()
 void CCharacter::SetBehavior(Behavior _behavior)
 {
 	m_behavior = _behavior;
+}
+
+void CCharacter::SetDebug(bool _debug)
+{
+	m_drawDebug = _debug;
 }
 
 void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
@@ -265,10 +285,10 @@ void CCharacter::Wander(float _dt)
 	m_wanderCircle.setPosition(wanderOrigin);
 
 	m_wanderLine[0].position = wanderOrigin;
-	m_wanderLine[0].color = sf::Color::Cyan;
+	m_wanderLine[0].color = sf::Color::Magenta;
 
 	m_wanderLine[1].position = wanderTarget;
-	m_wanderLine[1].color = sf::Color::Cyan;
+	m_wanderLine[1].color = sf::Color::Magenta;
 
 	//debug lines
 	//GREEN: Current Velocity

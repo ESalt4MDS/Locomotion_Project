@@ -25,6 +25,7 @@ public:
 
 	Behavior GetBehavior();
 	void SetBehavior(Behavior _behavior);
+	void SetDebug(bool _debug);
 
 	void Seek(sf::Vector2f _targetPosition, float _dt);
 	void Flee(sf::Vector2f _targetPosition, float _dt);

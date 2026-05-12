@@ -60,9 +60,11 @@ void CCharacterManager::Draw(sf::RenderWindow* _window)
 
 void CCharacterManager::SpawnCharacter(sf::Vector2f _position)
 {
-	CCharacter* character = new CCharacter(_position, Behavior::SEEK);
+	CCharacter* character = new CCharacter(_position, m_keyBinds.m_currentBehavior);
 
 	m_characters.push_back(character);
+
+	UpdateCharacters();
 }
 
 void CCharacterManager::HandleBehavior(CCharacter& _character)
@@ -97,5 +99,54 @@ void CCharacterManager::UpdateKeyBinds(const std::optional<sf::Event>& _event)
 		{
 			m_keyBinds.m_spawn = !m_keyBinds.m_spawn;
 		}
+
+		if (keyPressed->scancode == sf::Keyboard::Scancode::Num2)
+		{
+			m_keyBinds.m_debug = !m_keyBinds.m_debug;
+			UpdateCharacters();
+		}
+
+		if (keyPressed->scancode == sf::Keyboard::Scancode::Num3)
+		{
+			//change character behavior to seek
+			m_keyBinds.m_currentBehavior = Behavior::SEEK;
+			UpdateCharacters();
+		}
+
+		if (keyPressed->scancode == sf::Keyboard::Scancode::Num4)
+		{
+			//change character behavior to flee
+			m_keyBinds.m_currentBehavior = Behavior::FLEE;
+			UpdateCharacters();
+		}
+
+		if (keyPressed->scancode == sf::Keyboard::Scancode::Num5)
+		{
+			//change character behavior to wander
+			m_keyBinds.m_currentBehavior = Behavior::WANDER;
+			UpdateCharacters();
+		}
+
+		if (keyPressed->scancode == sf::Keyboard::Scancode::Num6)
+		{
+			//change character behavior to pursuit
+			m_keyBinds.m_currentBehavior = Behavior::PURSUIT;
+			UpdateCharacters();
+		}
+
+		if (keyPressed->scancode == sf::Keyboard::Scancode::Num7)
+		{
+			//change character behavior to evade
+			m_keyBinds.m_currentBehavior = Behavior::EVADE;
+			UpdateCharacters();
+		}
+	}
+}
+void CCharacterManager::UpdateCharacters()
+{
+	for (auto& iter : m_characters)
+	{
+		iter->SetBehavior(m_keyBinds.m_currentBehavior);
+		iter->SetDebug(m_keyBinds.m_debug);
 	}
 }

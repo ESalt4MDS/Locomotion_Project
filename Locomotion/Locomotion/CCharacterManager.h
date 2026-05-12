@@ -6,6 +6,8 @@
 struct KeyBinds
 {
 	bool m_spawn = false;
+	bool m_debug = false;
+	Behavior m_currentBehavior = Behavior::SEEK;
 };
 
 class CCharacterManager
@@ -21,6 +23,7 @@ public:
 
 	void SpawnCharacter(sf::Vector2f _position);
 	void HandleBehavior(CCharacter& _character);
+	
 
 private:
 
@@ -33,6 +36,7 @@ private:
 	KeyBinds m_keyBinds;
 	void UpdateKeyBinds(const std::optional<sf::Event>& _event);
 
+	void UpdateCharacters();
 
 };
 
