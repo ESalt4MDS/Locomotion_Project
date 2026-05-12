@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCharacter.cpp" />
+    <ClCompile Include="CCharacterManager.cpp" />
     <ClCompile Include="CProgramManager.cpp" />
     <ClCompile Include="CTarget.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCharacter.h" />
+    <ClInclude Include="CCharacterManager.h" />
     <ClInclude Include="CProgramManager.h" />
     <ClInclude Include="CTarget.h" />
     <ClInclude Include="PhysicsLibrary.h" />

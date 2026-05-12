@@ -2,8 +2,10 @@
 #include "PhysicsLibrary.h";
 #include "random"
 
-CCharacter::CCharacter(sf::Vector2f _position)
+CCharacter::CCharacter(sf::Vector2f _position, Behavior _behavior)
 {
+	m_behavior = _behavior;
+
 	m_shape = new sf::RectangleShape({ 20.0f, 20.0f });
 	m_shape->setPosition(_position);
 	m_shape->setOrigin({ 10.0f,10.0f });
@@ -92,6 +94,16 @@ void CCharacter::Draw(sf::RenderWindow* _window)
 
 	_window->draw(m_pursuitLine);
 
+}
+
+Behavior CCharacter::GetBehavior()
+{
+	return m_behavior;
+}
+
+void CCharacter::SetBehavior(Behavior _behavior)
+{
+	m_behavior = _behavior;
 }
 
 void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
@@ -320,5 +332,50 @@ void CCharacter::Pursuit(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosit
 		m_pursuitLine[1].color = sf::Color::Red;
 	}
 
+}
+
+void CCharacter::Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosition, float _dt)
+{
+	//if X position is close in line with the targets X position flee the targets current position
+	if (m_currentPosition.x < _targetPosition.x + m_seekRange && m_currentPosition.x > _targetPosition.x - m_seekRange)
+	{
+		Flee(_targetPosition, _dt);
+		printf("seek X\n");
+		/*printf("Current Pos: %f, %f\n", m_currentPosition.x, m_currentPosition.y);
+		printf("target Pos: %f, %f\n", _targetPosition.x, _targetPosition.y);*/
+
+		m_pursuitLine[0].position = m_shape->getPosition();
+		m_pursuitLine[0].color = sf::Color::Red;
+
+		m_pursuitLine[1].position = _targetPosition;
+		m_pursuitLine[1].color = sf::Color::Red;
+	}
+	//if Y position is close in line with the targets Y position flee the targets current position
+	else if (m_currentPosition.y < _targetPosition.y + m_seekRange && m_currentPosition.y > _targetPosition.y - m_seekRange)
+	{
+		Flee(_targetPosition, _dt);
+		printf("seek Y\n");
+
+		m_pursuitLine[0].position = m_shape->getPosition();
+		m_pursuitLine[0].color = sf::Color::Red;
+
+		m_pursuitLine[1].position = _targetPosition;
+		m_pursuitLine[1].color = sf::Color::Red;
+	}
+	//else flee the target future positon
+	else
+	{
+		sf::Vector2f newTargetPosition = _targetPosition + (plNormalize(_targetVelocity) * 40.0f);
+		Flee(newTargetPosition, _dt);
+		printf("Pursue\n");
+		/*printf("Current Pos: %f, %f\n", _targetPosition.x, _targetPosition.y);
+		printf("New Pos: %f, %f\n", newTargetPosition.x, newTargetPosition.y);*/
+
+		m_pursuitLine[0].position = m_shape->getPosition();
+		m_pursuitLine[0].color = sf::Color::Red;
+
+		m_pursuitLine[1].position = newTargetPosition;
+		m_pursuitLine[1].color = sf::Color::Red;
+	}
 }
 

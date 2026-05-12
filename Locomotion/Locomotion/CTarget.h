@@ -4,6 +4,7 @@
 class CTarget
 {
 public:
+
 	CTarget(sf::Vector2f _position);
 	~CTarget();
 
@@ -15,6 +16,7 @@ public:
 	sf::Vector2f GetCurrentVelocity();
 
 private:
+
 	sf::RectangleShape* m_shape;
 	sf::Vector2f m_currentPosition;
 	sf::Vector2f m_currentVelocity;

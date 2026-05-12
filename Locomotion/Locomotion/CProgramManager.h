@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-#include "CCharacter.h"
+#include "CCharacterManager.h"
 #include "CTarget.h"
 
 class CProgramManager
@@ -15,6 +15,8 @@ public:
 	void RunProgram();
 	void Draw();
 
+
+
 private:
 
 	sf::RenderWindow* m_window;
@@ -24,5 +26,9 @@ private:
 	sf::Clock m_clock;
 
 	CTarget* m_target;
+
+	CCharacterManager* m_characterManager;
+
+	sf::Vector2f m_mousePosition;
 };
 

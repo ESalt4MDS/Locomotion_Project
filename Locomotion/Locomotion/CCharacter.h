@@ -2,27 +2,46 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
+enum Behavior
+{
+	SEEK,
+	FLEE,
+	WANDER,
+	PURSUIT,
+	EVADE,
+	DEFAULT
+};
+
 class CCharacter
 {
 public:
-	CCharacter(sf::Vector2f _position);
+
+	CCharacter(sf::Vector2f _position, Behavior _behavior);
 	~CCharacter();
 
 	//void Update(float _dt, sf::Vector2f _targetPosition);
 	void Update();
 	void Draw(sf::RenderWindow* _window);
 
+	Behavior GetBehavior();
+	void SetBehavior(Behavior _behavior);
+
 	void Seek(sf::Vector2f _targetPosition, float _dt);
 	void Flee(sf::Vector2f _targetPosition, float _dt);
 	void Wander(float _dt);
 	void Pursuit(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosition, float _dt);
-
+	void Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosition, float _dt);
 
 private:
+
+	Behavior m_behavior = Behavior::DEFAULT;
+
 	sf::RectangleShape* m_shape;
 	sf::Vector2f m_currentPosition;
 	sf::Vector2f m_currentVelocity;
 	sf::Vector2f m_steeringForce;
+
+	bool m_drawDebug = false;
 
 	//seek & flee
 	float m_maxDesiredVelocity = 128.0f;
