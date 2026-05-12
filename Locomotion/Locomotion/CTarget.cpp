@@ -3,8 +3,9 @@
 
 CTarget::CTarget(sf::Vector2f _position)
 {
+	m_currentPosition = _position;
 	m_shape = new sf::RectangleShape({ 20.0f, 20.0f });
-	m_shape->setPosition(_position);
+	m_shape->setPosition(m_currentPosition);
 	m_shape->setFillColor(sf::Color::Red);
 	m_shape->setOrigin({ 10.0f, 10.0f });
 }
