@@ -77,13 +77,32 @@ void CCharacter::Update(float _dt)
 
 	m_shape->setPosition(m_currentPosition);
 
-	//summing steering forces together to apply all force affects
-	sf::Vector2f finalSteeringForce = sf::Vector2f(0.0f, 0.0f);
-	finalSteeringForce += m_steeringForce;
-	finalSteeringForce += m_separateSteeringForce;
+	if (m_behavior == Behavior::FLOCKING)
+	{
+		//summing steering forces together to apply all force affects
+		sf::Vector2f finalSteeringForce = sf::Vector2f(0.0f, 0.0f);
+		finalSteeringForce += m_steeringForce;
+		finalSteeringForce += m_separateSteeringForce;
+		finalSteeringForce += m_cohesionSteeringForce;
+		finalSteeringForce += m_alignmentSteeringForce;
 
-	//update velocity and position
-	m_currentVelocity += finalSteeringForce * m_steeringStrength * _dt;
+		//update velocity and position
+		m_currentVelocity += finalSteeringForce * m_steeringStrength * _dt;
+
+		if (m_currentVelocity.length() > m_maxDesiredVelocity)
+		{
+			m_currentVelocity = plNormalize(m_currentVelocity) * m_maxDesiredVelocity;
+		}
+	}
+	else
+	{
+		m_currentVelocity += m_steeringForce * _dt;
+
+		if (m_currentVelocity.length() > m_maxDesiredVelocity)
+		{
+			m_currentVelocity = plNormalize(m_currentVelocity) * m_maxDesiredVelocity;
+		}
+	}
 
 	m_currentPosition += m_currentVelocity * _dt;
 	m_shape->setPosition(m_currentPosition);
@@ -143,6 +162,11 @@ sf::Vector2f CCharacter::GetCurrentPosition()
 	return m_currentPosition;
 }
 
+sf::Vector2f CCharacter::GetCurrentVelocity()
+{
+	return m_currentVelocity;
+}
+
 void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
 {
 	//calculate direction to move in
@@ -180,9 +204,9 @@ void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
 	m_steeringForce *= m_seekStrength;
 
 	//update velocity and position
-	/*m_currentVelocity += m_steeringForce * _dt;
+	//m_currentVelocity += m_steeringForce * _dt;
 
-	m_currentPosition += m_currentVelocity * _dt;
+	/*m_currentPosition += m_currentVelocity * _dt;
 	m_shape->setPosition(m_currentPosition);*/
 
 
@@ -237,10 +261,10 @@ void CCharacter::Flee(sf::Vector2f _targetPosition, float _dt)
 	}
 
 	//update velocity and posiition
-	m_currentVelocity += m_steeringForce * _dt;
+	/*m_currentVelocity += m_steeringForce * _dt;
 
 	m_currentPosition += m_currentVelocity * _dt;
-	m_shape->setPosition(m_currentPosition);
+	m_shape->setPosition(m_currentPosition);*/
 
 
 	//debug lines
@@ -291,15 +315,15 @@ void CCharacter::Wander(float _dt)
 		m_steeringForce = plNormalize(m_steeringForce) * m_maxDesiredSteering;
 	}
 
-	m_currentVelocity += m_steeringForce * _dt;
+	/*m_currentVelocity += m_steeringForce * _dt;
 
 	if (m_currentVelocity.length() > m_maxDesiredVelocity)
 	{
 		m_currentVelocity = plNormalize(m_currentVelocity) * m_maxDesiredVelocity;
-	}
+	}*/
 
-	m_currentPosition += m_currentVelocity * _dt;
-	m_shape->setPosition(m_currentPosition);
+	/*m_currentPosition += m_currentVelocity * _dt;
+	m_shape->setPosition(m_currentPosition);*/
 
 	//debug
 	m_wanderCircle.setPosition(wanderOrigin);
@@ -334,7 +358,7 @@ void CCharacter::Pursuit(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosit
 	if (m_currentPosition.x < _targetPosition.x + m_seekRange && m_currentPosition.x > _targetPosition.x - m_seekRange)
 	{
 		Seek(_targetPosition, _dt);
-		printf("seek X\n");
+		//printf("seek X\n");
 		/*printf("Current Pos: %f, %f\n", m_currentPosition.x, m_currentPosition.y);
 		printf("target Pos: %f, %f\n", _targetPosition.x, _targetPosition.y);*/
 
@@ -348,7 +372,7 @@ void CCharacter::Pursuit(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosit
 	else if (m_currentPosition.y < _targetPosition.y + m_seekRange && m_currentPosition.y > _targetPosition.y - m_seekRange)
 	{
 		Seek(_targetPosition, _dt);
-		printf("seek Y\n");
+		//printf("seek Y\n");
 
 		m_pursuitLine[0].position = m_shape->getPosition();
 		m_pursuitLine[0].color = sf::Color::Red;
@@ -361,7 +385,7 @@ void CCharacter::Pursuit(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosit
 	{
 		sf::Vector2f newTargetPosition = _targetPosition + (plNormalize(_targetVelocity) * 40.0f);
 		Seek(newTargetPosition, _dt);
-		printf("Pursue\n");
+		//printf("Pursue\n");
 		/*printf("Current Pos: %f, %f\n", _targetPosition.x, _targetPosition.y);
 		printf("New Pos: %f, %f\n", newTargetPosition.x, newTargetPosition.y);*/
 
@@ -380,7 +404,7 @@ void CCharacter::Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPositio
 	if (m_currentPosition.x < _targetPosition.x + m_seekRange && m_currentPosition.x > _targetPosition.x - m_seekRange)
 	{
 		Flee(_targetPosition, _dt);
-		printf("seek X\n");
+		//printf("flee X\n");
 		/*printf("Current Pos: %f, %f\n", m_currentPosition.x, m_currentPosition.y);
 		printf("target Pos: %f, %f\n", _targetPosition.x, _targetPosition.y);*/
 
@@ -394,7 +418,7 @@ void CCharacter::Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPositio
 	else if (m_currentPosition.y < _targetPosition.y + m_seekRange && m_currentPosition.y > _targetPosition.y - m_seekRange)
 	{
 		Flee(_targetPosition, _dt);
-		printf("seek Y\n");
+		//printf("flee Y\n");
 
 		m_pursuitLine[0].position = m_shape->getPosition();
 		m_pursuitLine[0].color = sf::Color::Red;
@@ -407,7 +431,7 @@ void CCharacter::Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPositio
 	{
 		sf::Vector2f newTargetPosition = _targetPosition + (plNormalize(_targetVelocity) * 40.0f);
 		Flee(newTargetPosition, _dt);
-		printf("Pursue\n");
+		//printf("evade\n");
 		/*printf("Current Pos: %f, %f\n", _targetPosition.x, _targetPosition.y);
 		printf("New Pos: %f, %f\n", newTargetPosition.x, newTargetPosition.y);*/
 
@@ -460,5 +484,83 @@ void CCharacter::Separate(std::vector<CCharacter*>& _characters, float _dt)
 
 
 
+}
+
+void CCharacter::Cohesion(std::vector<CCharacter*>& _characters, float _dt)
+{
+	//the centre of mass the characters are drawn too and a count for num of neighbours
+	sf::Vector2f sumCohesion = sf::Vector2f(0.0f, 0.0f);
+	int cohesionCount = 0;
+
+	//go through all potential neighbouring characters with in the neighbourhood radius
+	for (int i = 0; i < _characters.size(); i++)
+	{
+		if (_characters[i] == this)
+		{
+			continue;
+		}
+
+		sf::Vector2f position = m_currentPosition - _characters[i]->GetCurrentPosition();
+		if (position.length() < m_neighbourhoodRadius)
+		{
+			//move = plNormalize(move);
+			sumCohesion += _characters[i]->GetCurrentPosition();
+			cohesionCount++;
+		}
+	}
+
+	//average the sum of neighbour positions
+	sumCohesion = plDivVecByScalar(sumCohesion, cohesionCount);
+
+	sumCohesion = plNormalize(sumCohesion) * m_maxSpeed;
+
+	m_cohesionSteeringForce = sumCohesion - m_currentVelocity;
+
+	//truncate and scale
+	if (m_cohesionSteeringForce.length() > m_maxDesiredSteering)
+	{
+		m_cohesionSteeringForce = plNormalize(m_cohesionSteeringForce) * m_maxDesiredSteering;
+	}
+
+	m_cohesionSteeringForce *= m_cohesionStrength;
+}
+
+void CCharacter::Alignment(std::vector<CCharacter*>& _characters, float _dt)
+{
+	//the centre of mass the characters are drawn too and a count for num of neighbours
+	sf::Vector2f sumAlignment = sf::Vector2f(0.0f, 0.0f);
+	int alignmentCount = 0;
+
+	//go through all potential neighbouring characters with in the neighbourhood radius
+	for (int i = 0; i < _characters.size(); i++)
+	{
+		if (_characters[i] == this)
+		{
+			continue;
+		}
+
+		sf::Vector2f position = m_currentPosition - _characters[i]->GetCurrentPosition();
+		if (position.length() < m_neighbourhoodRadius)
+		{
+			//move = plNormalize(move);
+			sumAlignment += _characters[i]->GetCurrentVelocity();
+			alignmentCount++;
+		}
+	}
+
+	//average the sum of neighbour positions
+	sumAlignment = plDivVecByScalar(sumAlignment, alignmentCount);
+
+	sumAlignment = plNormalize(sumAlignment) * m_maxSpeed;
+
+	m_alignmentSteeringForce = sumAlignment - m_currentVelocity;
+
+	//truncate and scale
+	if (m_alignmentSteeringForce.length() > m_maxDesiredSteering)
+	{
+		m_alignmentSteeringForce = plNormalize(m_alignmentSteeringForce) * m_maxDesiredSteering;
+	}
+
+	m_alignmentSteeringForce *= m_alignmentStrength;
 }
 

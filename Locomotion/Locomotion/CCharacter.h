@@ -9,7 +9,7 @@ enum Behavior
 	WANDER,
 	PURSUIT,
 	EVADE,
-	SEPARATE,
+	FLOCKING,
 	DEFAULT
 };
 
@@ -28,6 +28,7 @@ public:
 	void SetBehavior(Behavior _behavior);
 	void SetDebug(bool _debug);
 	sf::Vector2f GetCurrentPosition();
+	sf::Vector2f GetCurrentVelocity();
 
 	void Seek(sf::Vector2f _targetPosition, float _dt);
 	void Flee(sf::Vector2f _targetPosition, float _dt);
@@ -36,6 +37,8 @@ public:
 	void Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosition, float _dt);
 
 	void Separate(std::vector<CCharacter*>& _characters, float _dt);
+	void Cohesion(std::vector<CCharacter*>& _characters, float _dt);
+	void Alignment(std::vector<CCharacter*>& _characters, float _dt);
 
 private:
 
@@ -54,7 +57,7 @@ private:
 	float m_maxDesiredSteering = 64.0f;
 	float m_speed = 0.0f;
 	float m_maxSpeed = 20.0f;
-	float m_seekStrength = 1.5f;
+	float m_seekStrength = 1.0f;
 
 
 	//wander
@@ -71,10 +74,18 @@ private:
 	float m_seekRange = 20.0f;
 
 
-	//seperation
+	//separation
 	float m_neighbourhoodRadius = 200.0f;
 	sf::Vector2f m_separateSteeringForce;
 	float m_separateStrength = 1.0f;
+
+	//cohesion
+	sf::Vector2f m_cohesionSteeringForce;
+	float m_cohesionStrength = 1.0f;
+
+	//alignment
+	sf::Vector2f m_alignmentSteeringForce;
+	float m_alignmentStrength = 1.0f;
 
 	//seek & flee debug lines
 	sf::VertexArray m_currentVelLine;

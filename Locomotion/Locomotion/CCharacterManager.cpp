@@ -86,9 +86,11 @@ void CCharacterManager::HandleBehavior(CCharacter& _character)
 	case Behavior::EVADE:
 		_character.Evade(m_targetVelocity, m_targetPosition, m_dt);
 		break;
-	case Behavior::SEPARATE:
+	case Behavior::FLOCKING:
 		_character.Seek(m_targetPosition, m_dt);
 		_character.Separate(m_characters, m_dt);
+		_character.Cohesion(m_characters, m_dt);
+		_character.Alignment(m_characters, m_dt);
 		break;
 	default:
 		break;
@@ -148,7 +150,7 @@ void CCharacterManager::UpdateKeyBinds(const std::optional<sf::Event>& _event)
 		if (keyPressed->scancode == sf::Keyboard::Scancode::Num8)
 		{
 			//change character behavior to evade
-			m_keyBinds.m_currentBehavior = Behavior::SEPARATE;
+			m_keyBinds.m_currentBehavior = Behavior::FLOCKING;
 			UpdateCharacters();
 		}
 	}
