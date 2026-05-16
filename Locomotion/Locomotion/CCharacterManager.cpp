@@ -35,7 +35,7 @@ void CCharacterManager::Update(sf::Vector2f _targetPosition, sf::Vector2f _targe
 	//update characters
 	for (auto& iter : m_characters)
 	{
-		iter->Update();
+		iter->Update(_dt);
 	}
 
 	m_targetPosition = _targetPosition;
@@ -85,6 +85,10 @@ void CCharacterManager::HandleBehavior(CCharacter& _character)
 		break;
 	case Behavior::EVADE:
 		_character.Evade(m_targetVelocity, m_targetPosition, m_dt);
+		break;
+	case Behavior::SEPARATE:
+		_character.Seek(m_targetPosition, m_dt);
+		_character.Separate(m_characters, m_dt);
 		break;
 	default:
 		break;
@@ -138,6 +142,13 @@ void CCharacterManager::UpdateKeyBinds(const std::optional<sf::Event>& _event)
 		{
 			//change character behavior to evade
 			m_keyBinds.m_currentBehavior = Behavior::EVADE;
+			UpdateCharacters();
+		}
+
+		if (keyPressed->scancode == sf::Keyboard::Scancode::Num8)
+		{
+			//change character behavior to evade
+			m_keyBinds.m_currentBehavior = Behavior::SEPARATE;
 			UpdateCharacters();
 		}
 	}

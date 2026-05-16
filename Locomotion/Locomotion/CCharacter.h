@@ -9,6 +9,7 @@ enum Behavior
 	WANDER,
 	PURSUIT,
 	EVADE,
+	SEPARATE,
 	DEFAULT
 };
 
@@ -20,18 +21,21 @@ public:
 	~CCharacter();
 
 	//void Update(float _dt, sf::Vector2f _targetPosition);
-	void Update();
+	void Update(float _dt);
 	void Draw(sf::RenderWindow* _window);
 
 	Behavior GetBehavior();
 	void SetBehavior(Behavior _behavior);
 	void SetDebug(bool _debug);
+	sf::Vector2f GetCurrentPosition();
 
 	void Seek(sf::Vector2f _targetPosition, float _dt);
 	void Flee(sf::Vector2f _targetPosition, float _dt);
 	void Wander(float _dt);
 	void Pursuit(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosition, float _dt);
 	void Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPosition, float _dt);
+
+	void Separate(std::vector<CCharacter*>& _characters, float _dt);
 
 private:
 
@@ -41,6 +45,7 @@ private:
 	sf::Vector2f m_currentPosition;
 	sf::Vector2f m_currentVelocity;
 	sf::Vector2f m_steeringForce;
+	float m_steeringStrength = 1.0f;
 
 	bool m_drawDebug = false;
 
@@ -49,6 +54,8 @@ private:
 	float m_maxDesiredSteering = 64.0f;
 	float m_speed = 0.0f;
 	float m_maxSpeed = 20.0f;
+	float m_seekStrength = 1.5f;
+
 
 	//wander
 	float m_wanderForwardDistance = 1.0f;
@@ -63,6 +70,11 @@ private:
 	sf::Vector2f m_newTargetPosition;
 	float m_seekRange = 20.0f;
 
+
+	//seperation
+	float m_neighbourhoodRadius = 200.0f;
+	sf::Vector2f m_separateSteeringForce;
+	float m_separateStrength = 1.0f;
 
 	//seek & flee debug lines
 	sf::VertexArray m_currentVelLine;

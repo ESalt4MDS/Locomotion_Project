@@ -52,7 +52,7 @@ CCharacter::~CCharacter()
 	m_shape = nullptr;
 }
 
-void CCharacter::Update()
+void CCharacter::Update(float _dt)
 {
 
 	if (m_currentPosition.x > WindowSize.x)
@@ -76,6 +76,18 @@ void CCharacter::Update()
 	}
 
 	m_shape->setPosition(m_currentPosition);
+
+	//summing steering forces together to apply all force affects
+	sf::Vector2f finalSteeringForce = sf::Vector2f(0.0f, 0.0f);
+	finalSteeringForce += m_steeringForce;
+	finalSteeringForce += m_separateSteeringForce;
+
+	//update velocity and position
+	m_currentVelocity += finalSteeringForce * m_steeringStrength * _dt;
+
+	m_currentPosition += m_currentVelocity * _dt;
+	m_shape->setPosition(m_currentPosition);
+
 }
 
 void CCharacter::Draw(sf::RenderWindow* _window)
@@ -126,6 +138,11 @@ void CCharacter::SetDebug(bool _debug)
 	m_drawDebug = _debug;
 }
 
+sf::Vector2f CCharacter::GetCurrentPosition()
+{
+	return m_currentPosition;
+}
+
 void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
 {
 	//calculate direction to move in
@@ -159,11 +176,14 @@ void CCharacter::Seek(sf::Vector2f _targetPosition, float _dt)
 		m_steeringForce = plNormalize(m_steeringForce) * m_maxDesiredSteering;
 	}
 
+	//how strong influential the seek force is on the final steering force
+	m_steeringForce *= m_seekStrength;
+
 	//update velocity and position
-	m_currentVelocity += m_steeringForce * _dt;
+	/*m_currentVelocity += m_steeringForce * _dt;
 
 	m_currentPosition += m_currentVelocity * _dt;
-	m_shape->setPosition(m_currentPosition);
+	m_shape->setPosition(m_currentPosition);*/
 
 
 	//debug lines
@@ -397,5 +417,48 @@ void CCharacter::Evade(sf::Vector2f _targetVelocity, sf::Vector2f _targetPositio
 		m_pursuitLine[1].position = newTargetPosition;
 		m_pursuitLine[1].color = sf::Color::Red;
 	}
+}
+
+void CCharacter::Separate(std::vector<CCharacter*>& _characters, float _dt)
+{
+	//setup sum variables
+	sf::Vector2f sumSeparate = sf::Vector2f(0.0f, 0.0f);
+	int separateCount = 0;
+
+	//go through all potential neighbouring characters with in the neighbourhood radius
+	for (int i = 0; i < _characters.size(); i++)
+	{
+		sf::Vector2f move = m_currentPosition - _characters[i]->GetCurrentPosition();
+		if (move.length() < m_neighbourhoodRadius)
+		{
+			move = plNormalize(move);
+			sumSeparate += move;
+			separateCount += 1;
+		}
+	}
+
+	if (separateCount == 0)
+	{
+		m_separateSteeringForce = sf::Vector2f(0.0f, 0.0f);
+		return;
+	}
+
+	//calculate desired velocity from the sum
+	sumSeparate = plDivVecByScalar(sumSeparate, separateCount);
+	sumSeparate = plNormalize(sumSeparate) * m_maxSpeed;
+
+	//calculate steering force
+	m_separateSteeringForce = sumSeparate - m_currentVelocity;
+
+	//truncate and scale
+	if (m_separateSteeringForce.length() > m_maxDesiredSteering)
+	{
+		m_separateSteeringForce = plNormalize(m_separateSteeringForce) * m_maxDesiredSteering;
+	}
+	
+	m_separateSteeringForce *= m_separateStrength;
+
+
+
 }
 

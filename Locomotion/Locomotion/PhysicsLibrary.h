@@ -18,3 +18,11 @@ inline sf::Vector2f plNormalize(sf::Vector2f _vector)
 
 	return _vector /= Magnitude;
 }
+
+inline sf::Vector2f plDivVecByScalar(sf::Vector2f _vector, int _int)
+{
+	_vector.x /= _int;
+	_vector.y /= _int;
+
+	return _vector;
+}
